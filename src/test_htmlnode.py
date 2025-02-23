@@ -2,7 +2,7 @@ import unittest
 
 from htmlnode import HTMLNode
 
-class TextHTMLNode(unittest.TestCase):
+class TestHTMLNode(unittest.TestCase):
     def test_eq1(self):
         node  = HTMLNode()
         node2 = HTMLNode()

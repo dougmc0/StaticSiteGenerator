@@ -32,6 +32,8 @@ class HTMLNode:
         raise Exception("NotImplementedError")
     
     def props_to_html(self):
+        if self.props == None:
+            return ""
         out = []
         for key, value in self.props.items():
             out.append(f"{key}=\"{value}\"")
