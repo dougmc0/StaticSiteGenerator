@@ -3,6 +3,7 @@
 from textnode import *
 from leafnode import *
 from parentnode import *
+from functions import *
 
 print ("# hello world")
 
