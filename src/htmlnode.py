@@ -13,20 +13,29 @@ class HTMLNode:
             return True
         else:
             return False
+
     
     def __repr__ (self):
-        print(__repr_helper("tag", self.tag))
-        print(__repr_helper("value", self.value))
-        print(__repr_helper("children", self.children))
-        print(__repr_helper("props", self.props))
-        #return f"TextNode({self.text}, {self.text_type.value}, {self.url})"
+        o=[]
+        o.append(f"tag: {self.tag}")
+        o.append(f"value: {self.value}")
+        if self.children == None:
+            o.append ("children: no children")
+        else:
+            for child in self.children:
+                o.append(f"child: {child.to_html()}")
+              
+        props_out = []
+        if self.props == None:
+            o.append ("props: none")
+        else:
+            for key, value in self.props.items():
+                props_out.append(f"key=\"{value}")
+            props_out.sort()
+            props: ", ".join(props_out) + "\n"
+            o.append(f"props={props}")
+        return "\n".join(o)
 
-    def __repr_helper__ (name, dict):
-        out = []
-        for key, value in dict.items():
-            out.append(f"key=\"{value}")
-        out.sort()
-        return name + ": " + " ".join(out)
     
     def to_html(self_):
         raise Exception("NotImplementedError")
