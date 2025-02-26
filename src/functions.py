@@ -84,3 +84,10 @@ def split_nodes_link(old_nodes):
     if text != "":
         out.append(TextNode(text, TextType.TEXT))
     return out   
+
+
+def text_to_textnodes(text):
+    nodes = [TextNode(text, TextType.TEXT)]
+    nodes = split_nodes_image(nodes)
+    nodes = split_nodes_link(nodes)
+    return nodes
