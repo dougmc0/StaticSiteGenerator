@@ -2,6 +2,14 @@ import re
 from enum import Enum
 from textnode import *
 
+class BlockType(Enum):
+    PARAGRAPH      = "paragraph" 
+    HEADING        = "heading"
+    CODE           = "code"
+    QUOTE          = "quote"
+    UNORDERED_LIST = "unordered_list"
+    ORDERED_LIST   = "ordered_list"
+
 
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
     out = []
@@ -88,6 +96,9 @@ def split_nodes_link(old_nodes):
 
 def text_to_textnodes(text):
     nodes = [TextNode(text, TextType.TEXT)]
+    nodes = split_nodes_delimiter(nodes, "**", TextType.BOLD)
+    nodes = split_nodes_delimiter(nodes, "_", TextType.ITALIC)
+    nodes = split_nodes_delimiter(nodes, "`", TextType.CODE)
     nodes = split_nodes_image(nodes)
     nodes = split_nodes_link(nodes)
     return nodes
@@ -95,3 +106,17 @@ def text_to_textnodes(text):
 def markdown_to_blocks(markdown):
     blocks = markdown.split("\n\n")
     return blocks
+
+def block_to_block_type(block):
+    if block.startswith("#"):
+        return BlockType.HEADING
+    elif block.startswith("    "):
+        return BlockType.CODE
+    elif block.startswith(">"):
+        return BlockType.QUOTE
+    elif block.startswith("- "):
+        return BlockType.UNORDERED_LIST
+    elif block[0].isdigit() and block[1] == ".":
+        return BlockType.ORDERED_LIST
+    else:
+        return BlockType.PARAGRAPH
