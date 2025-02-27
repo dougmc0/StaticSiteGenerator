@@ -12,13 +12,25 @@ class BlockType(Enum):
 
 
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
-    out = []
-    for node in old_nodes:
-        if node.text_type == text_type:
-            out += node.text.split(delimiter)
+    new_nodes = []
+    for old_node in old_nodes:
+        if old_node.text_type != TextType.TEXT:
+            new_nodes.append(old_node)
         else:
-            out.append(node)
-    return out
+            sections = old_node.text.split(delimiter)
+            print(f"{delimiter} sections = {sections}")
+            if len(sections) % 2 == 0:
+                raise ValueError(f"bad markdown for {delimiter}: {old_node.text}")
+            inside_delimiter = False
+            for section in sections:
+                if section != "":
+                    if inside_delimiter:
+                        new_nodes.append(TextNode(section, text_type))
+                    else:
+                        new_nodes.append(TextNode(section, TextType.TEXT))
+                inside_delimiter = not inside_delimiter
+    #print ("new_nodes = ", new_nodes)
+    return new_nodes
 
 def extract_markdown_images(text):
     matches = re.findall(r"!\[([^\[\]]*)\]\(([^\(\)]*)\)", text)
@@ -99,8 +111,8 @@ def text_to_textnodes(text):
     nodes = split_nodes_delimiter(nodes, "**", TextType.BOLD)
     nodes = split_nodes_delimiter(nodes, "_", TextType.ITALIC)
     nodes = split_nodes_delimiter(nodes, "`", TextType.CODE)
-    nodes = split_nodes_image(nodes)
-    nodes = split_nodes_link(nodes)
+    #nodes = split_nodes_image(nodes)
+    #nodes = split_nodes_link(nodes)
     return nodes
 
 def markdown_to_blocks(markdown):
