@@ -94,7 +94,7 @@ class TestFunctions(unittest.TestCase):
         ]
         print (f"nodes = {nodes}")
         print (f"expected = {expected}")
-        #self.assertListEqual(nodes, expected)
+        self.assertListEqual(nodes, expected)
 
 
     def test_markdown_to_blocks(self):
