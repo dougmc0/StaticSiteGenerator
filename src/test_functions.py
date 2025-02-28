@@ -79,7 +79,7 @@ class TestFunctions(unittest.TestCase):
     def test_text_to_textnodes(self):
         string = "This is **bold text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
         nodes = text_to_textnodes(string)
-        print(nodes)
+        #print(nodes)
         expected = [
             TextNode("This is ", TextType.TEXT),
             TextNode("bold text", TextType.BOLD),
@@ -92,8 +92,8 @@ class TestFunctions(unittest.TestCase):
             TextNode(" and a ", TextType.TEXT),
             TextNode("link", TextType.LINK, "https://boot.dev"),
         ]
-        print (f"nodes = {nodes}")
-        print (f"expected = {expected}")
+        #print (f"nodes = {nodes}")
+        #print (f"expected = {expected}")
         self.assertListEqual(nodes, expected)
 
 
@@ -117,7 +117,7 @@ This is the same paragraph on a new line
         
                                 
     def test_block_to_block_type(self):
-        print("hi")
+        #print("hi")
         block = "Paragraph"
         block_type = block_to_block_type(block)
         self.assertEqual(block_type, BlockType.PARAGRAPH)

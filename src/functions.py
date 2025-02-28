@@ -18,7 +18,7 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
             new_nodes.append(old_node)
         else:
             sections = old_node.text.split(delimiter)
-            print(f"{delimiter} sections = {sections}")
+            #print(f"{delimiter} sections = {sections}")
             if len(sections) % 2 == 0:
                 raise ValueError(f"bad markdown for {delimiter}: {old_node.text}")
             inside_delimiter = False
@@ -54,11 +54,11 @@ def split_nodes_image(old_nodes):
                 for part in extract_markdown_images(text):
                     split_string = f"![{part[0]}]({part[1]})"
                     sections = text.split(split_string, 1)
-                    print(f"text = {text}")
-                    print(f"part = {part}")
-                    print(f"split-string={split_string}")
-                    print(f"sections = {sections}")
-                    print()
+                    #print(f"text = {text}")
+                    #print(f"part = {part}")
+                    #print(f"split-string={split_string}")
+                    #print(f"sections = {sections}")
+                    #print()
                     # if there is something before, add it.
                     if sections[0] != "":
                         out.append(TextNode(sections[0], TextType.TEXT))
@@ -67,44 +67,48 @@ def split_nodes_image(old_nodes):
                     # and now leave the rest for the next iteration
                     if len(sections) > 1:
                         text = sections[1]
-                        print (f"new text = {text}")
+                        #print (f"new text = {text}")
                     else:
                         text = ""
         else:
             out.append(node)
-    print (f"out = {out}")
+    #print (f"out = {out}")
     return out   
+
+
 
 def split_nodes_link(old_nodes):
     out = []
-    text = ""
     for node in old_nodes:
         if node.text_type == TextType.TEXT:
             text = node.text
-            for part in extract_markdown_links(node.text):
-                split_string = f"[{part[0]}]({part[1]})"
-                sections = text.split(split_string, 1)
-                #print(f"text = {text}")
-                #print(f"part = {part}")
-                #print(f"split-string={split_string}")
-                #print(f"sections = {sections}")
-                #print()
-                # if there is something before, add it.
-                if sections[0] != "":
-                    out.append(TextNode(sections[0], TextType.TEXT))
-                # now add the image
-                out.append(TextNode(part[0], TextType.LINK, part[1]))
-                # and now leave the rest for the next iteration
-                if len(sections) > 1:
-                    text = sections[1]
-                else:
-                    text = ""
+            while text != "":
+                links = extract_markdown_links(text)
+                if len(links) == 0:
+                    out.append(TextNode(text, TextType.TEXT))
                     break
+                for part in extract_markdown_links(text):
+                    split_string = f"[{part[0]}]({part[1]})"
+                    sections = text.split(split_string, 1)
+                    #print(f"text = {text}")
+                    #print(f"part = {part}")
+                    #print(f"split-string={split_string}")
+                    #print(f"sections = {sections}")
+                    #print()
+                    # if there is something before, add it.
+                    if sections[0] != "":
+                        out.append(TextNode(sections[0], TextType.TEXT))
+                    # now add the link
+                    out.append(TextNode(part[0], TextType.LINK, part[1]))
+                    # and now leave the rest for the next iteration
+                    if len(sections) > 1:
+                        text = sections[1]
+                        #print (f"new text = {text}")
+                    else:
+                        text = ""
         else:
             out.append(node)
-    # catch anything left over
-    if text != "":
-        out.append(TextNode(text, TextType.TEXT))
+    #print (f"out = {out}")
     return out   
 
 
