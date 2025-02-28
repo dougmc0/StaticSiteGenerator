@@ -130,6 +130,8 @@ def block_to_block_type(block):
         return BlockType.HEADING
     elif block.startswith("    "):
         return BlockType.CODE
+    elif block.startswith("```"):
+        return BlockType.CODE
     elif block.startswith(">"):
         return BlockType.QUOTE
     elif block.startswith("- "):
@@ -138,3 +140,31 @@ def block_to_block_type(block):
         return BlockType.ORDERED_LIST
     else:
         return BlockType.PARAGRAPH
+    
+
+def markdown_to_html_node(markdown):
+    blocks = markdown_to_blocks(markdown)
+    print (f"blocks = {blocks}")
+    nodes = []
+    for block in blocks:
+        block_type = block_to_block_type(block)
+        match block_type:
+            case BlockType.PARAGRAPH:
+                nodes += text_to_textnodes(block)
+            case BlockType.HEADING:
+                nodes.append(LeafNode(f"h{block.count('#')}", block[2:]))
+            case BlockType.CODE:
+                nodes.append(LeafNode("code", block[4:]))
+            case BlockType.QUOTE:
+                nodes.append(LeafNode("blockquote", block[2:]))
+            case BlockType.UNORDERED_LIST:
+                items = block.split("\n")
+                items = [item[2:] for item in items]
+                items = [text_to_textnodes(item) for item in items]
+                nodes.append(LeafNode("ul", "\n".join([f"<li>{item}</li>" for item in items])))
+            case BlockType.ORDERED_LIST:
+                items = block.split("\n")
+                items = [item[3:] for item in items]
+                items = [text_to_textnodes(item) for item in items]
+                nodes.append(LeafNode("ol", "\n".join([f"<li>{item}</li>" for item in items])))
+    return nodes
